@@ -7,7 +7,7 @@
  * Requires PHP: 5.6
  * Author: whodunitagency, audrasjb
  * Author URI: https://jeanbaptisteaudras.com
- * Version: 0.1
+ * Version: 0.2
  * License: GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text-domain: contextual-adminbar-color
@@ -85,7 +85,7 @@ function contextual_adminbar_color_add_favicon( $url ) {
 		$authorized = contextual_adminbar_color_is_user_role_authorized();
 		$chosen_color = contextual_adminbar_color_get_the_chosen_color();
 		if ( $chosen_color && isset( $chosen_color['favicon'] ) && 1 === $chosen_color['favicon'] && true === $authorized ) {
-	    	$url = plugin_dir_url( __FILE__ ) . 'assets/favicons/favicon-' . $chosen_color['slug'] . '.ico';
+	    	$url = plugin_dir_url( __FILE__ ) . 'images/favicons/favicon-' . $chosen_color['slug'] . '.ico';
 		}
 	}
 	return $url;
@@ -342,7 +342,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_blue" type="radio" value="blue" <?php checked( $slug, 'blue' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-blue.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-blue.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Blue', 'contextual-adminbar-color' ); ?></span>
@@ -360,7 +360,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_red" type="radio" value="red" <?php checked( $slug, 'red' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-red.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-red.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Red', 'contextual-adminbar-color' ); ?></span>
@@ -378,7 +378,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_green" type="radio" value="green" <?php checked( $slug, 'green' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-green.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-green.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Green', 'contextual-adminbar-color' ); ?></span>
@@ -396,7 +396,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_purple" type="radio" value="purple" <?php checked( $slug, 'purple' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-purple.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-purple.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Purple', 'contextual-adminbar-color' ); ?></span>
@@ -414,7 +414,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_orange" type="radio" value="orange" <?php checked( $slug, 'orange' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-orange.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-orange.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Orange', 'contextual-adminbar-color' ); ?></span>
@@ -432,7 +432,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_darkgray" type="radio" value="darkgray" <?php checked( $slug, 'darkgray' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>/assets/schemes/scheme-darkgray.png" alt="" />
+													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-darkgray.png" alt="" />
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Dark gray', 'contextual-adminbar-color' ); ?></span>

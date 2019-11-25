@@ -3,7 +3,7 @@ Contributors: whodunitagency, audrasjb
 Tags: environment, adminbar, color, scheme, staging, production, preprod, environments
 Requires at least: 5.3
 Tested up to: 5.3
-Stable tag: 0.1
+Stable tag: 0.2
 Requires PHP: 5.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,8 @@ The plugin provides a settings screen which several options:
 
 * choose between several color predefined schemes.
 * use a favicon to better differentiate your environments in your browser’s tabs.
-* 
+* add a custom message in your admin bar, like "Production website", "staging version" or whatever your want.
+* choose the user roles that will see the color scheme (other roles will see the default admin bar).
 
 It also offers few PHP constants you can use in your `wp-config.php` file (see Frequently Asked Questions below).
 
@@ -59,5 +60,8 @@ Example: `define( 'CONTEXTUAL_ADMINBAR_SETTINGS', 0 )`
 
 == Changelog ==
 
+= 0.2 =
+* Plugin initial version, now on WordPress.org!
+
 = 0.1 =
-* Plugin initial commit. Works fine :)
+* Plugin initial version, only released on GitHub.
