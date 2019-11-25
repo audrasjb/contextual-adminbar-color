@@ -1,6 +1,6 @@
 === Contextual Adminbar Color ===
 Contributors: whodunitagency, audrasjb
-Tags: environment, adminbar, color, scheme, staging, production, preprod
+Tags: environment, adminbar, color, scheme, staging, production, preprod, environments
 Requires at least: 5.3
 Tested up to: 5.3
 Stable tag: 0.1
@@ -8,39 +8,54 @@ Requires PHP: 5.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Use custom admin bar colors to differentiate environments (staging, preprod, production)
+Use custom admin bar colors and favicons to differentiate your environments (staging/prod)
 
 == Description ==
 
-This plugins provides custom admin bar colors to differentiate environments (staging, prepared, production). It's really **easy to use** and **developer-friendly**.
+This plugins provides custom admin bar colors to differentiate environments (staging, preprod, production). It's really **easy to use** and **developer-friendly**.
 
-The plugin provides a settings screen to choose between several color schemes.
+The plugin provides a settings screen which several options:
 
-It also offers few PHP constants you can use in your `wp-config.php` file:
+* choose between several color predefined schemes.
+* use a favicon to better differentiate your environments in your browser’s tabs.
+* 
 
-* `CONTEXTUAL_ADMINBAR_COLOR` to force color scheme.
-* `CONTEXTUAL_ADMINBAR_MESSAGE` to force your custom admin bar message to display.
-* `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings directly within the `wp-config.php` file.
+It also offers few PHP constants you can use in your `wp-config.php` file (see Frequently Asked Questions below).
 
-Since WordPress Core is probably going to deprecate alternate admin color schemes in mid-term, this plugin is meant to be use by those who rely on colors to know is they are in staging, preproduction or production environment.
+Since WordPress Core will probably deprecate alternate admin color schemes in mid-term, this plugin is meant to be use by those who rely on colors to know is they are in staging, preproduction or production environment.
 
 Last but not least, all provided color schemes are accessibility-ready!
 
 == Screenshots ==
-1. Screenshot
-2. Screenshot
+1. Plugin settings screen.
+2. Use favicons to differentiate your browser tabs.
+3. Front-end rendering.
 
 == Installation ==
 
-1. XX
+1. Activate the plugin.
+2. Good to Tools > Adminbar settings to configure the plugin.
+3. Save your changes and enjoy :)
 
 == Frequently Asked Questions ==
 
 = How to use the PHP constant in wp-config.php?
 
-* `CONTEXTUAL_ADMINBAR_COLOR` accepts …TODO.
-* `CONTEXTUAL_ADMINBAR_MESSAGE` accepts … TODO.
-* `CONTEXTUAL_ADMINBAR_SETTINGS` accepts… TODO. 
+Use `CONTEXTUAL_ADMINBAR_COLOR` to force color scheme.
+Accepted values: `blue`, `red`, `green`, `purple`, `orange` and `darkgray`.
+Example: `define( 'CONTEXTUAL_ADMINBAR_COLOR', 'purple' );`
+
+Use `CONTEXTUAL_ADMINBAR_MESSAGE` to force your custom admin bar message to display.
+Accepted values: any valid string.
+Example: `define( 'CONTEXTUAL_ADMINBAR_MESSAGE', 'This is the staging website' );`
+
+* `CONTEXTUAL_ADMINBAR_FAVICON` to force a favicon.
+Accepted values: `0` (don’t force a color based favicon) or `1` (force WordPress Admin to use the favicon that is related to your selected color scheme).
+Example: `define( 'CONTEXTUAL_ADMINBAR_FAVICON', 1 );`
+
+* `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings only within the `wp-config.php` file.
+Accepted values: `0` (remove the settings screen) or `1` (keep it).
+Example: `define( 'CONTEXTUAL_ADMINBAR_SETTINGS', 0 )`
 
 == Changelog ==
 

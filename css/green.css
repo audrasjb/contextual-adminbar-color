@@ -7,7 +7,7 @@
  */
 :root {
 	--main-text: #fff;
-	--main-text-secondary: #e6f1e2;
+	--main-text-secondary: #D2DCCE;
 	--main-background: #6B8E23;
 	--main-background-secondary: #4F5F28;
 }
@@ -21,6 +21,13 @@
 .contextual-adminbar-color #wp-admin-bar-contextual-adminbar-color-message div {
 	color: var(--main-text-secondary);
 	background: var(--main-background-secondary);
+}
+
+.contextual-adminbar-color #wp-admin-bar-contextual-adminbar-color-message:hover,
+.contextual-adminbar-color #wp-admin-bar-contextual-adminbar-color-message div:hover {
+	color: var(--main-text-secondary);
+	background: var(--main-background-secondary);
+	cursor: text;
 }
 
 .contextual-adminbar-color #wpadminbar .ab-item,

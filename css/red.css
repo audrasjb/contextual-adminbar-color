@@ -23,6 +23,13 @@
 	background: var(--main-background-secondary);
 }
 
+.contextual-adminbar-color #wp-admin-bar-contextual-adminbar-color-message:hover,
+.contextual-adminbar-color #wp-admin-bar-contextual-adminbar-color-message div:hover {
+	color: var(--main-text-secondary);
+	background: var(--main-background-secondary);
+	cursor: text;
+}
+
 .contextual-adminbar-color #wpadminbar .ab-item,
 .contextual-adminbar-color #wpadminbar a.ab-item,
 .contextual-adminbar-color #wpadminbar > #wp-toolbar span.ab-label,
