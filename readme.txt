@@ -50,11 +50,11 @@ Use `CONTEXTUAL_ADMINBAR_MESSAGE` to force your custom admin bar message to disp
 Accepted values: any valid string.
 Example: `define( 'CONTEXTUAL_ADMINBAR_MESSAGE', 'This is the staging website' );`
 
-* `CONTEXTUAL_ADMINBAR_FAVICON` to force a favicon.
+Use `CONTEXTUAL_ADMINBAR_FAVICON` to force a favicon.
 Accepted values: `0` (don’t force a color based favicon) or `1` (force WordPress Admin to use the favicon that is related to your selected color scheme).
 Example: `define( 'CONTEXTUAL_ADMINBAR_FAVICON', 1 );`
 
-* `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings only within the `wp-config.php` file.
+Use `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings only within the `wp-config.php` file.
 Accepted values: `0` (remove the settings screen) or `1` (keep it).
 Example: `define( 'CONTEXTUAL_ADMINBAR_SETTINGS', 0 )`
 
