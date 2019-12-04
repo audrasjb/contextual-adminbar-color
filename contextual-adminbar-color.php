@@ -13,15 +13,44 @@
  * Text-domain: contextual-adminbar-color
  */
 
-function contextual_adminbar_color_admin_enqueue_adminbar_color() {
+function contextual_adminbar_color_admin_enqueue_adminbar_color( $hook ) {
 	$authorized = contextual_adminbar_color_is_user_role_authorized();
 	$chosen_color = contextual_adminbar_color_get_the_chosen_color();
 	if ( $chosen_color && isset( $chosen_color['slug'] ) && true === $authorized ) {
 		$color_slug = strtolower( esc_attr( $chosen_color['slug'] ) );
 		if ( file_exists( plugin_dir_path( __FILE__ ) . '/css/' . $color_slug . '.css' ) ) {
 			wp_register_style( 'contextual-adminbar-color-admin-' . $color_slug, plugin_dir_url( __FILE__ ) . '/css/' . $color_slug . '.css' );
+			if ( 'custom' === $color_slug ) {
+				$style = ':root {
+				--main-text: ' . $chosen_color['custom']['color_4'] . ';
+				--main-text-secondary: ' . $chosen_color['custom']['color_3'] . ';
+				--main-background: ' . $chosen_color['custom']['color_2'] . ';
+				--main-background-secondary: ' . $chosen_color['custom']['color_1'] . ';
+				}';
+				wp_add_inline_style( 'contextual-adminbar-color-admin-' . $color_slug, $style );
+			}
 			wp_enqueue_style( 'contextual-adminbar-color-admin-' . $color_slug );
 		}
+	}
+	if ( 'tools_page_contextual-adminbar-color' === $hook ) {
+		wp_enqueue_script( 'wp-color-picker' );
+		$script = "jQuery( document ).ready( function( $ ) { 
+			$( '.contextual_adminbar_color_setting_custom_color' ).wpColorPicker(); 
+			if ( $( '#contextual_adminbar_color_setting_slug_custom' ).is( ':checked' ) ) {
+				// DO NOTHING
+			} else {
+				$( '.contextual_adminbar_color_setting_custom_container' ).hide();
+			}
+			$( '.contextual_adminbar_color_table input[type=\"radio\"]' ).change( function() { 
+				if ( $( '#contextual_adminbar_color_setting_slug_custom' ).is( ':checked' ) ) {
+					$( '.contextual_adminbar_color_setting_custom_container' ).slideDown();
+				} else {
+					$( '.contextual_adminbar_color_setting_custom_container' ).slideUp();
+				}
+			} );
+		} );";
+		wp_add_inline_script( 'wp-color-picker', $script );
+		wp_enqueue_style( 'wp-color-picker' );
 	}
 }
 add_action( 'admin_enqueue_scripts', 'contextual_adminbar_color_admin_enqueue_adminbar_color' );
@@ -34,6 +63,15 @@ function contextual_adminbar_color_front_enqueue_adminbar_color() {
 			$color_slug = strtolower( esc_attr( $chosen_color['slug'] ) );
 			if ( file_exists( plugin_dir_path( __FILE__ ) . '/css/' . $color_slug . '.css' ) ) {
 				wp_register_style( 'contextual-adminbar-color-front-' . $color_slug, plugin_dir_url( __FILE__ ) . 'css/' . $color_slug . '.css' );
+				if ( 'custom' === $color_slug ) {
+					$style = ':root {
+					--main-text: ' . $chosen_color['custom']['color_4'] . ';
+					--main-text-secondary: ' . $chosen_color['custom']['color_3'] . ';
+					--main-background: ' . $chosen_color['custom']['color_2'] . ';
+					--main-background-secondary: ' . $chosen_color['custom']['color_1'] . ';
+					}';
+					wp_add_inline_style( 'contextual-adminbar-color-front-' . $color_slug, $style );
+				}
 				wp_enqueue_style( 'contextual-adminbar-color-front-' . $color_slug );
 			}
 		}
@@ -119,12 +157,26 @@ function contextual_adminbar_color_get_the_chosen_color() {
 	$slug = '';
 	$message = '';
 	$favicon = '';
+	$color_1 = $default_color_1 = '#555555';
+	$color_2 = $default_color_2 = '#777777';
+	$color_3 = $default_color_3 = '#eeeeee';
+	$color_4 = $default_color_4 = '#ffffff';
 
 	if ( get_option( 'contextual-adminbar-color' ) ) {
 		$current_settings = get_option( 'contextual-adminbar-color' );
 		$slug = sanitize_text_field( $current_settings['slug'] );
 		$message = sanitize_text_field( $current_settings['message'] );
 		$favicon = intval( $current_settings['favicon'] );
+		if ( 'custom' === $slug ) {
+			$get_color_1 = sanitize_hex_color( $current_settings['custom']['color_1'] );
+			$color_1 = ( ! empty( $get_color_1 ) ) ? $get_color_1 : $default_color_1;
+			$get_color_2 = sanitize_hex_color( $current_settings['custom']['color_2'] );
+			$color_2 = ( ! empty( $get_color_2 ) ) ? $get_color_2 : $default_color_2;
+			$get_color_3 = sanitize_hex_color( $current_settings['custom']['color_3'] );
+			$color_3 = ( ! empty( $get_color_3 ) ) ? $get_color_3 : $default_color_3;
+			$get_color_4 = sanitize_hex_color( $current_settings['custom']['color_4'] );
+			$color_4 = ( ! empty( $get_color_4 ) ) ? $get_color_4 : $default_color_4;
+		}
 	}
 
 	if ( defined( 'CONTEXTUAL_ADMINBAR_COLOR' ) && ! empty( CONTEXTUAL_ADMINBAR_COLOR ) ) {
@@ -143,6 +195,12 @@ function contextual_adminbar_color_get_the_chosen_color() {
 		'slug'	  => $slug,
 		'message' => $message,
 		'favicon' => $favicon,
+		'custom' => array(
+			'color_1' => $color_1,
+			'color_2' => $color_2,
+			'color_3' => $color_3,
+			'color_4' => $color_4,
+		),
 	);
 	
 	return $chosen_color;
@@ -227,12 +285,36 @@ function contextual_adminbar_color_submenu_page_callback() {
 				</div>
 				<?php
 			}
+			$default_color_1 = '#555555';
+			$default_color_2 = '#777777';
+			$default_color_3 = '#eeeeee';
+			$default_color_4 = '#ffffff';
 			if ( isset( $_POST ) && ! empty( $_POST ) ) {
 				if ( wp_verify_nonce( $_POST['nonce'], 'contextual_adminbar_color_nonce' ) ) {
 
 					$new_slug = '';
+					$new_color_1 = '';
+					$new_color_2 = '';
+					$new_color_3 = '';
+					$new_color_4 = '';
 					if ( isset( $_POST['contextual_adminbar_color_setting_slug'] ) ) {
 						$new_slug = sanitize_text_field( $_POST['contextual_adminbar_color_setting_slug'] );
+						if ( isset( $_POST['contextual_adminbar_color_setting_custom_1'] ) ) {
+							$get_new_color_1 = sanitize_hex_color( $_POST['contextual_adminbar_color_setting_custom_1'] );
+							$new_color_1 = ( ! empty( $get_new_color_1 ) ) ? $get_new_color_1 : $default_color_1;
+						}
+						if ( isset( $_POST['contextual_adminbar_color_setting_custom_2'] ) ) {
+							$get_new_color_2 = sanitize_hex_color( $_POST['contextual_adminbar_color_setting_custom_2'] );
+							$new_color_2 = ( ! empty( $get_new_color_2 ) ) ? $get_new_color_2 : $default_color_2;
+						}
+						if ( isset( $_POST['contextual_adminbar_color_setting_custom_3'] ) ) {
+							$get_new_color_3 = sanitize_hex_color( $_POST['contextual_adminbar_color_setting_custom_3'] );
+							$new_color_3 = ( ! empty( $get_new_color_3 ) ) ? $get_new_color_3 : $default_color_3;
+						}
+						if ( isset( $_POST['contextual_adminbar_color_setting_custom_4'] ) ) {
+							$get_new_color_4 = sanitize_hex_color( $_POST['contextual_adminbar_color_setting_custom_4'] );
+							$new_color_4 = ( ! empty( $get_new_color_4 ) ) ? $get_new_color_4 : $default_color_4;
+						}
 					}
 					
 					$new_message = '';
@@ -256,6 +338,12 @@ function contextual_adminbar_color_submenu_page_callback() {
 						'message' => $new_message,
 						'favicon' => $new_favicon,
 						'roles' => $display_for_roles,
+						'custom' => array(
+							'color_1' => $new_color_1,
+							'color_2' => $new_color_2,
+							'color_3' => $new_color_3,
+							'color_4' => $new_color_4,
+						),
 					);
 					update_option( 'contextual-adminbar-color', $new_settings );
 					?>
@@ -275,12 +363,26 @@ function contextual_adminbar_color_submenu_page_callback() {
 				}
 			}
 			$slug = '';
+			$color_1 = '';
+			$color_2 = '';
+			$color_3 = '';
+			$color_4 = '';
 			$message = '';
 			$favicon = '';
 			$existing_roles = array();
 			if ( get_option( 'contextual-adminbar-color' ) ) {
 				$current_settings = get_option( 'contextual-adminbar-color' );
 				$slug = sanitize_text_field( $current_settings['slug'] );
+				
+				$get_color_1 = sanitize_hex_color( $current_settings['custom']['color_1'] );
+				$color_1 = ( ! empty( $get_color_1 ) ) ? $get_color_1 : $default_color_1;
+				$get_color_2 = sanitize_hex_color( $current_settings['custom']['color_2'] );
+				$color_2 = ( ! empty( $get_color_2 ) ) ? $get_color_2 : $default_color_2;
+				$get_color_3 = sanitize_hex_color( $current_settings['custom']['color_3'] );
+				$color_3 = ( ! empty( $get_color_3 ) ) ? $get_color_3 : $default_color_3;
+				$get_color_4 = sanitize_hex_color( $current_settings['custom']['color_4'] );
+				$color_4 = ( ! empty( $get_color_4 ) ) ? $get_color_4 : $default_color_4;
+				
 				$message = sanitize_text_field( $current_settings['message'] );
 				$favicon = intval( $current_settings['favicon'] );
 				if ( ! empty( $current_settings['roles'] ) ) {
@@ -293,7 +395,7 @@ function contextual_adminbar_color_submenu_page_callback() {
 
 			<h1><?php esc_html_e( 'Contextual adminbar settings', 'contextual-adminbar-color' ); ?></h1>
 
-			<table class="form-table" role="presentation">
+			<table class="form-table contextual_adminbar_color_table" role="presentation">
 				<tbody>
 				<?php $settings_counter = 0; ?>
 				<?php if ( false === $disabled_settings['CONTEXTUAL_ADMINBAR_MESSAGE'] ) : ?>
@@ -328,9 +430,30 @@ function contextual_adminbar_color_submenu_page_callback() {
 								.contextual_adminbar_color_table_schemes td {
 									padding: 0 0.5em 0 0;
 								}
-								.contextual_adminbar_color_table_schemes img {
-									border: 1px solid #000;
-									border-radius: 5px;
+								.color-scheme-container {
+									display: flex;
+									margin: 0;
+									padding: 0;
+									width: 99px;
+									height: 50px;
+									border: 1px solid #7e8993;
+									border-radius: 4px;
+								}
+								.color-scheme-item {
+									margin: 0;
+									padding: 0;
+									width: 33px;
+									height: 50px;
+								}
+								.button.button-secondary.contextual_adminbar_color__custom_button {
+									vertical-align: middle;
+									margin-left: 1em;
+								}
+								.contextual_adminbar_color_setting_custom_container {
+									
+								}
+								.contextual_adminbar_color_setting_custom_container label {
+									display: block;
 								}
 								</style>
 								
@@ -342,7 +465,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_blue" type="radio" value="blue" <?php checked( $slug, 'blue' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-blue.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #347EA4;"></div>
+														<div class="color-scheme-item" style="background: #4796b3;"></div>
+														<div class="color-scheme-item" style="background: #e2ecf1;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Blue', 'contextual-adminbar-color' ); ?></span>
@@ -360,7 +487,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_red" type="radio" value="red" <?php checked( $slug, 'red' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-red.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #be3631;"></div>
+														<div class="color-scheme-item" style="background: #CF4845;"></div>
+														<div class="color-scheme-item" style="background: #f7e3d3;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Red', 'contextual-adminbar-color' ); ?></span>
@@ -378,7 +509,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_green" type="radio" value="green" <?php checked( $slug, 'green' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-green.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #4F5F28;"></div>
+														<div class="color-scheme-item" style="background: #6B8E23;"></div>
+														<div class="color-scheme-item" style="background: #D2DCCE;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Green', 'contextual-adminbar-color' ); ?></span>
@@ -396,7 +531,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_purple" type="radio" value="purple" <?php checked( $slug, 'purple' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-purple.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #1C0E54;"></div>
+														<div class="color-scheme-item" style="background: #483D8B;"></div>
+														<div class="color-scheme-item" style="background: #C1AAFC;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Purple', 'contextual-adminbar-color' ); ?></span>
@@ -414,7 +553,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_orange" type="radio" value="orange" <?php checked( $slug, 'orange' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-orange.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #E47817;"></div>
+														<div class="color-scheme-item" style="background: #DF8836;"></div>
+														<div class="color-scheme-item" style="background: #f1eae2;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Orange', 'contextual-adminbar-color' ); ?></span>
@@ -432,7 +575,11 @@ function contextual_adminbar_color_submenu_page_callback() {
 													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_darkgray" type="radio" value="darkgray" <?php checked( $slug, 'darkgray' ); ?> />
 												</td>
 												<td>
-													<img src="<?php echo plugin_dir_url( __FILE__ ); ?>images/schemes/scheme-darkgray.png" alt="" />
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: #6C5353;"></div>
+														<div class="color-scheme-item" style="background: #797676;"></div>
+														<div class="color-scheme-item" style="background: #DCDCDC;"></div>
+													</div>
 												</td>
 												<td>
 													<span><?php esc_html_e( 'Dark gray', 'contextual-adminbar-color' ); ?></span>
@@ -440,6 +587,76 @@ function contextual_adminbar_color_submenu_page_callback() {
 											</tr>
 										</table>
 									</label>
+								</div>
+
+								<div>
+									<label for="contextual_adminbar_color_setting_slug_custom">
+										<table class="contextual_adminbar_color_table_schemes">
+											<tr>
+												<td>
+													<input name="contextual_adminbar_color_setting_slug" id="contextual_adminbar_color_setting_slug_custom" type="radio" value="custom" <?php checked( $slug, 'custom' ); ?> />
+												</td>
+												<td>
+													<div class="color-scheme-container">
+														<div class="color-scheme-item" style="background: <?php echo $color_1; ?>;"></div>
+														<div class="color-scheme-item" style="background: <?php echo $color_2; ?>;"></div>
+														<div class="color-scheme-item" style="background: <?php echo $color_3; ?>;"></div>
+													</div>
+												</td>
+												<td>
+													<span><?php esc_html_e( 'Custom', 'contextual-adminbar-color' ); ?></span>
+												</td>
+											</tr>
+										</table>
+									</label>
+									<div class="contextual_adminbar_color_setting_custom_container"
+										<?php
+										$params = array(
+											1 => array(
+												'label'         => esc_html__( 'Primary background color', 'contextual-adminbar-color' ),
+												'name'          => 'contextual_adminbar_color_setting_custom_1',
+												'class'         => 'contextual_adminbar_color_setting_custom_color',
+												'default_value' => $color_1,
+											),
+											2 => array(
+												'label'         => esc_html__( 'Secondary background color', 'contextual-adminbar-color' ),
+												'name'          => 'contextual_adminbar_color_setting_custom_2',
+												'class'         => 'contextual_adminbar_color_setting_custom_color',
+												'default_value' => $color_2,
+											),
+											3 => array(
+												'label'         => esc_html__( 'Primary text color', 'contextual-adminbar-color' ),
+												'name'          => 'contextual_adminbar_color_setting_custom_3',
+												'class'         => 'contextual_adminbar_color_setting_custom_color',
+												'default_value' => $color_3,
+											),
+											4 => array(
+												'label'         => esc_html__( 'Secondary text color', 'contextual-adminbar-color' ),
+												'name'          => 'contextual_adminbar_color_setting_custom_4',
+												'class'         => 'contextual_adminbar_color_setting_custom_color',
+												'default_value' => $color_4,
+											),
+										);
+										for ( $i = 1; $i <= 4; $i++ ) :
+											?>
+											<p>
+												<label for="<?php echo $params[$i]['name']; ?>">
+													<?php echo $params[$i]['label']; ?>
+												</label>
+											</p>
+											<p>
+												<input 
+													type="text" 
+													name="<?php echo $params[$i]['name']; ?>" 
+													id="<?php echo $params[$i]['name']; ?>" 
+													class="<?php echo $params[$i]['class']; ?>" 
+													value="<?php echo $params[$i]['default_value']; ?>" 
+												/>
+											</p>
+											<?php
+										endfor;
+										?>
+									</div>
 								</div>
 
 								<p class="description" id="description_contextual_adminbar_color_setting_slug">
