@@ -207,7 +207,7 @@ function contextual_adminbar_color_get_the_chosen_color() {
 }
 
 function contextual_adminbar_color_submenu_page() { 
-	if ( defined( 'CONTEXTUAL_ADMINBAR_SETTINGS' ) && false === CONTEXTUAL_ADMINBAR_SETTINGS ) {
+	if ( defined( 'CONTEXTUAL_ADMINBAR_SETTINGS' ) && ( false === CONTEXTUAL_ADMINBAR_SETTINGS || 0 === CONTEXTUAL_ADMINBAR_SETTINGS ) ) {
 		// Do nothing
 	} else {
 		add_submenu_page( 'tools.php', esc_html__( 'Adminbar settings', 'contextual-adminbar-color' ), esc_html__( 'Adminbar settings', 'contextual-adminbar-color' ), 'manage_options', 'contextual-adminbar-color', 'contextual_adminbar_color_submenu_page_callback' );
