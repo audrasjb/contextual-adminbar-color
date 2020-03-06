@@ -2,8 +2,8 @@
 Contributors: whodunitagency, audrasjb
 Tags: environment, adminbar, color, scheme, staging, production, preprod, environments
 Requires at least: 5.3
-Tested up to: 5.3
-Stable tag: 0.2
+Tested up to: 5.4
+Stable tag: 0.3.1
 Requires PHP: 5.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -50,15 +50,21 @@ Use `CONTEXTUAL_ADMINBAR_MESSAGE` to force your custom admin bar message to disp
 Accepted values: any valid string.
 Example: `define( 'CONTEXTUAL_ADMINBAR_MESSAGE', 'This is the staging website' );`
 
-Use `CONTEXTUAL_ADMINBAR_FAVICON` to force a favicon.
+* `CONTEXTUAL_ADMINBAR_FAVICON` to force a favicon.
 Accepted values: `0` (don’t force a color based favicon) or `1` (force WordPress Admin to use the favicon that is related to your selected color scheme).
 Example: `define( 'CONTEXTUAL_ADMINBAR_FAVICON', 1 );`
 
-Use `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings only within the `wp-config.php` file.
+* `CONTEXTUAL_ADMINBAR_SETTINGS` to remove the settings screen from WordPress Admin, and manage the plugin’s settings only within the `wp-config.php` file.
 Accepted values: `0` (remove the settings screen) or `1` (keep it).
 Example: `define( 'CONTEXTUAL_ADMINBAR_SETTINGS', 0 )`
 
 == Changelog ==
+
+= 0.3.1 =
+* Adds option to switch back to default color scheme.
+
+= 0.3 =
+* Fixes security issues, thanks to the WordPress Plugin/Security team.
 
 = 0.2 =
 * Plugin initial version, now on WordPress.org!
